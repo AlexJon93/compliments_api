@@ -1,5 +1,6 @@
 class ComplimentsController < ApplicationController
   before_action :set_compliment, only: [:show, :update, :destroy]
+  before_action :check_admin, except: :show
 
   # GET /compliments
   def index
@@ -47,5 +48,9 @@ class ComplimentsController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def compliment_params
       params.require(:compliment).permit(:content)
+    end
+
+    def check_admin
+      render json: { error: 'Need to be admin to access this endpoint' }, status: :unauthorized unless @current_user.admin?
     end
 end
